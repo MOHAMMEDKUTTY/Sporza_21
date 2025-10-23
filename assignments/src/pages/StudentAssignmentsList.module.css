@@ -1,0 +1,41 @@
+/* src/pages/StudentAssignmentsList.module.css */
+
+.pageContainer {
+  padding: 1.5rem;
+  max-width: 56rem; /* 896px */
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.pageHeader {
+  font-size: 1.875rem; /* 30px */
+  font-weight: 800;
+  margin-bottom: 2rem;
+  color: #93c5fd; /* Light Blue */
+  border-bottom: 1px solid #334155; /* Slate 700 */
+  padding-bottom: 0.5rem;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.alertError {
+  color: #f87171; /* Red 400 */
+  text-align: center;
+  padding: 40px;
+}
+
+.loadingText {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8; /* Slate 400 */
+}
+
+.emptyStateText {
+  font-size: 1.25rem;
+  color: #94a3b8; /* Slate 400 */
+  text-align: center;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}

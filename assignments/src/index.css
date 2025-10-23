@@ -1,0 +1,239 @@
+/* src/index.css */
+@import "tailwindcss";
+body {
+  margin: 0; /* Remove default margin */
+  font-family: 'Inter', sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* --- Dark Theme (Applied via Tailwind) --- */
+  background-color: #0F172A; /* Slate 900 */
+  color: #E2E8F0; /* Slate 200 */
+  min-height: 100vh; /* Ensure background covers full height */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* General Styles (Keep or adjust as needed) */
+h1, h2, h3 {
+  color: #93c5fd; /* Light Blue for headings, example */
+}
+
+button { /* General button style, overridden by specific classes */
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: #2563eb; /* Blue 600 */
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #1d4ed8; /* Blue 700 */
+}
+
+a { /* Basic link styling */
+    color: #60a5fa; /* Blue 400 */
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Styles for Assignment Card --- */
+
+.assignment-card {
+  background-color: #1E293B; /* Slate 800 */
+  border: 1px solid #334155; /* Slate 700 */
+  border-radius: 0.75rem; 
+  overflow: hidden; 
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out; 
+  margin-bottom: 1rem; 
+  color: #E2E8F0; 
+  width: 100%; /* Make sure it fills container, but doesn't overflow */
+  box-sizing: border-box; /* Include padding/border in width */
+}
+.assignment-card:hover {
+   box-shadow: 0 0 10px rgba(96, 165, 250, 0.15); /* Slightly less intense glow */
+   border-color: #60a5fa; /* Blue 400 */
+}
+
+.assignment-card-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem; /* Slightly more padding */
+}
+
+.assignment-icon-container {
+  background-color: #3b82f6; /* Blue 500 */
+  border-radius: 50%;
+  padding: 0.6rem; /* Adjust size */
+  margin-right: 1rem;
+  display: flex; /* Center icon */
+  align-items: center; /* Center icon */
+  justify-content: center; /* Center icon */
+  flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+.assignment-icon {
+  width: 1.1rem; /* Adjust size */
+  height: 1.1rem; /* Adjust size */
+  color: white;
+}
+
+.assignment-details {
+  flex-grow: 1; /* Takes up available space */
+  overflow: hidden; /* Prevent long text overflowing */
+}
+
+.assignment-title {
+  font-size: 1.05rem; /* Adjusted size */
+  font-weight: 600; /* Semibold */
+  color: #bfdbfe; /* Blue 200 */
+  margin-bottom: 0.1rem;
+  white-space: nowrap; /* Prevent title wrap */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ... for long titles */
+}
+
+.assignment-author {
+  font-size: 0.8rem;
+  color: #94a3b8; /* Slate 400 */
+}
+
+.assignment-meta {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem; /* Space before date */
+  color: #94a3b8; /* Slate 400 */
+  font-size: 0.8rem;
+  flex-shrink: 0; /* Prevent date/chevron shrinking */
+  white-space: nowrap; /* Prevent date wrap */
+}
+
+.assignment-date {
+   margin-right: 0.75rem; /* Space between date and chevron */
+}
+
+.assignment-chevron {
+  width: 0.9rem;
+  height: 0.9rem;
+  transition: transform 0.3s ease-in-out;
+  color: #64748b; /* Slate 500 */
+}
+.assignment-chevron.expanded {
+  transform: rotate(180deg);
+}
+
+
+.assignment-card-body {
+  max-height: 0; /* Collapsed by default */
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+.assignment-card-body.expanded {
+   max-height: 500px; /* Adjust as needed for content */
+}
+
+.assignment-body-content {
+   padding: 1rem 1.25rem;
+   padding-top: 0.75rem;
+   border-top: 1px solid #334155; /* Separator line */
+   font-size: 0.9rem;
+   color: #cbd5e1; /* Slate 300 */
+}
+
+.assignment-due-date {
+   font-weight: 500;
+   color: #f87171; /* Red 400 for due date */
+   margin-bottom: 0.75rem; /* Increased margin */
+   font-size: 0.85rem;
+}
+
+.assignment-description {
+   white-space: pre-wrap; /* Preserve line breaks */
+   line-height: 1.6; /* Increased line height */
+   margin-bottom: 1rem; /* Add space below description */
+}
+
+/* Submission Form Styles */
+.submission-form {
+   margin-top: 1rem;
+   padding-top: 1rem;
+   border-top: 1px dashed #475569; /* Dashed separator */
+}
+
+.remarks-label {
+   display: block;
+   font-size: 0.8rem;
+   font-weight: 500;
+   color: #94a3b8; /* Slate 400 */
+   margin-bottom: 0.25rem;
+}
+
+.remarks-textarea {
+   /* Inherit from form-input and customize */
+   width: 100%;
+   padding: 0.75rem;
+   border-radius: 0.5rem;
+   border: 1px solid #475569; /* Slate 600 */
+   background-color: #0F172A; /* Slate 900 */
+   color: #E2E8F0; /* Slate 200 */
+   margin-top: 0.25rem;
+   margin-bottom: 0.75rem;
+   resize: vertical; /* Allow vertical resize */
+   min-height: 60px;
+   font-size: 0.9rem; /* Match body content font size */
+   line-height: 1.6;
+}
+.remarks-textarea:focus {
+    outline: none;
+    border-color: #60a5fa; /* Blue 400 */
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
+}
+
+.submit-button {
+  padding: 0.6rem 1.2rem; /* Adjusted padding */
+  border-radius: 0.5rem;
+  background-color: #16a34a; /* Green 600 */
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+.submit-button:hover {
+   background-color: #15803d; /* Green 700 */
+}
+.modern-input-focus:focus {
+  outline: none;
+  border-color: #60a5fa; /* Blue 400 */
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3); /* Soft blue ring */
+}
+
+/* Optional: Gradient button style */
+.btn-gradient-green {
+  background-image: linear-gradient(to right, #22c55e , #15803d); /* Green 500 to 700 */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3); /* Green shadow */
+}
+.btn-gradient-green:hover {
+  background-image: linear-gradient(to right, #16a34a , #14532d); /* Darker green */
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+  transform: translateY(-1px);
+}
+.btn-gradient-green:disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
+   box-shadow: none;
+   transform: none;
+}

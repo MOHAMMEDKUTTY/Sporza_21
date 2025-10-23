@@ -1,0 +1,369 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Sporza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A; 
+            color: #E2E8F0;
+        }
+        .card {
+            background-color: #1E293B; 
+            border: 1px solid #334155;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #475569;
+            background-color: #0F172A;
+            color: #E2E8F0;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col sm:flex-row items-center justify-between mb-10 pb-4 border-b border-blue-400/30">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-400 mb-4 sm:mb-0">Sporza Student Dashboard</h1>
+            <div class="flex items-center gap-4">
+                <a href="weekly-calendar.html" class="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-5 py-2.5 rounded-full transition duration-300 transform hover:scale-105 shadow-md shadow-teal-900/50">Weekly Log</a>
+                
+                <a id="assignments-link" href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-full transition duration-300 transform hover:scale-105 shadow-md shadow-blue-900/50">Assignments</a>
+
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2.5 rounded-full transition duration-300 transform hover:scale-105 shadow-md shadow-red-900/50">Logout</button>
+            </div>
+        </header>
+
+        <main class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1 space-y-8">
+                <section class="card text-center bg-slate-800/50 p-6">
+                    <h2 id="userName" class="text-3xl font-extrabold text-teal-400 mb-2">Hello!</h2>
+                    <p class="text-gray-400 mb-6">Welcome to your daily health tracker.</p>
+
+                    <div class="space-y-4">
+                        <div class="bg-slate-700 p-4 rounded-lg">
+                            <p class="text-xs text-gray-400 font-semibold uppercase">Current Weight</p>
+                            <p id="userWeight" class="text-4xl font-black text-blue-400">--</p>
+                            <button onclick="showWeightModal()" class="mt-2 text-sm bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-full text-white transition">Update Weight</button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-700 p-4 rounded-lg">
+                                <p class="text-xs text-gray-400 font-semibold uppercase">Calories Consumed</p>
+                                <p id="caloriesConsumed" class="text-3xl font-black text-green-400">0</p>
+                            </div>
+                            <div class="bg-slate-700 p-4 rounded-lg">
+                                <p class="text-xs text-gray-400 font-semibold uppercase">Calories Burned Today</p>
+                                <p id="caloriesBurned" class="text-3xl font-black text-red-400">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+    
+            <section class="card lg:col-span-2 space-y-6">
+                <h2 class="text-2xl font-bold text-blue-300 border-b border-gray-700 pb-3">Log Your Meals & Activity (Today)</h2>
+
+                
+                <div class="bg-slate-700/50 p-5 rounded-lg">
+                    <h3 class="text-xl font-bold text-teal-300 mb-4 flex items-center gap-2"> Food Log</h3>
+                    <form id="foodLogForm" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <select id="mealType" class="form-input sm:col-span-1" required>
+                            <option value="">Select Meal</option>
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Lunch">Lunch</option>
+                            <option value="Dinner">Dinner</option>
+                            <option value="Snack">Snack</option>
+                        </select>
+                        <input type="text" id="foodName" placeholder="Food item (e.g., Apple, Chicken Breast)" class="form-input sm:col-span-2" required>
+                        <input type="number" id="calorieCount" placeholder="Calories (kcal)" class="form-input sm:col-span-1" required>
+                        <button type="submit" class="sm:col-span-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg shadow-green-900/50">Add Food Item</button>
+                    </form>
+                </div>
+                
+                <div class="bg-slate-700/50 p-5 rounded-lg">
+                    <h3 class="text-xl font-bold text-teal-300 mb-4 flex items-center gap-2">Activity Log</h3>
+                    <form id="activityLogForm" class="space-y-4">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <input type="text" id="exerciseDone" placeholder="Exercise Done (e.g., Weightlifting, Yoga)" class="form-input">
+                            <input type="number" id="caloriesBurnedInput" placeholder="Calories Burned (e.g., 350)" class="form-input">
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <input type="text" id="sportsPlaying" placeholder="Sport Played (e.g., Basketball, Swimming)" class="form-input">
+                            <input type="number" id="runningSteps" placeholder="Running Steps (Total for today)" class="form-input">
+                        </div>
+                        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg shadow-orange-900/50">Save Daily Activity</button>
+                    </form>
+                </div>
+
+                <div class="pt-4">
+                    <h3 class="text-xl font-bold text-blue-300 mb-4">Today's Log</h3>
+                    <div id="dailyLogView" class="space-y-4">
+                        <p id="logStatus" class="text-gray-400 text-center">Loading today's log...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="weightModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 p-6 rounded-xl shadow-2xl max-w-sm w-full border border-blue-500/50">
+            <h3 class="text-xl font-bold text-blue-400 mb-4">Update Weight (kg)</h3>
+            <input type="number" id="newWeightInput" placeholder="Enter new weight in kg" class="form-input mb-4" required>
+            <div class="flex justify-between gap-4">
+                <button onclick="updateWeight()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-300">Save</button>
+                <button onclick="hideWeightModal()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 rounded-lg transition duration-300">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customAlert" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 p-6 rounded-xl shadow-2xl max-w-sm w-full border border-teal-500/50">
+            <p id="alertMessage" class="text-lg text-white font-semibold mb-4 text-center">Alert Message</p>
+            <button onclick="document.getElementById('customAlert').classList.add('hidden')" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg transition duration-300">OK</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                currentUser = JSON.parse(user);
+                if (currentUser.role !== 'student') {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                // --- Your existing code (all correct) ---
+                document.getElementById('userName').textContent = `Hello, ${currentUser.name}!`;
+                document.getElementById('userWeight').textContent = `${currentUser.weight} kg`;
+                fetchDailySummary();
+
+                // âœ… --- FIXED ASSIGNMENTS LINK LOGIC --- âœ…
+                const assignmentsLink = document.getElementById('assignments-link');
+                
+                // Get the ID from the currentUser object (checks for 'id' OR '_id')
+                const studentId = currentUser.id || currentUser._id; 
+
+                if (studentId) {
+                    // Set the correct link href
+                    assignmentsLink.href = `http://localhost:3000/assignments/student/${studentId}`;
+                } else {
+                    // Use your custom alert if the ID is missing from the user object
+                    assignmentsLink.href = "#";
+                    // Use the customAlert function you defined
+                    assignmentsLink.onclick = () => customAlert('Could not find student ID. Please log in again.');
+                    assignmentsLink.style.opacity = '0.5';
+                }
+                // âœ… --- END OF FIX --- âœ…
+
+            } else {
+                window.location.href = 'login.html';
+            }
+
+            document.getElementById('foodLogForm').addEventListener('submit', logFood);
+            document.getElementById('activityLogForm').addEventListener('submit', logActivity);
+        });
+
+        function customAlert(message) {
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('customAlert').classList.remove('hidden');
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        function showWeightModal() {
+            document.getElementById('newWeightInput').value = currentUser.weight;
+            document.getElementById('weightModal').classList.remove('hidden');
+        }
+
+        function hideWeightModal() {
+            document.getElementById('weightModal').classList.add('hidden');
+        }
+
+        async function updateWeight() {
+            const newWeight = document.getElementById('newWeightInput').value;
+            if (!newWeight || isNaN(newWeight) || newWeight <= 0) {
+                customAlert('Please enter a valid positive weight.');
+                return;
+            }
+
+            try {
+                // Use currentUser.id OR ._id
+                const studentId = currentUser.id || currentUser._id;
+                const res = await fetch(`/user/update-weight/${studentId}`, { 
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ weight: parseFloat(newWeight) })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    customAlert('Weight updated successfully!');
+                    currentUser.weight = data.newWeight;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    document.getElementById('userWeight').textContent = `${currentUser.weight} kg`;
+                    hideWeightModal();
+                } else {
+                    customAlert(data.message || 'Failed to update weight.');
+                }
+            } catch (err) {
+                customAlert('Network error during weight update.');
+                console.error("Weight Update Error:", err);
+            }
+        }
+
+        async function logFood(e) {
+            e.preventDefault();
+            const type = document.getElementById('mealType').value;
+            const food = document.getElementById('foodName').value;
+            const calories = parseInt(document.getElementById('calorieCount').value);
+
+            if (!type || !food || isNaN(calories) || calories < 0) {
+                customAlert('Please fill in all meal fields with valid data.');
+                return;
+            }
+            
+            try {
+                // Use currentUser.id OR ._id
+                const studentId = currentUser.id || currentUser._id;
+                const res = await fetch('/meal', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: studentId, type, food, calories })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    customAlert(`Logged ${food} to ${type} successfully.`);
+                    document.getElementById('foodLogForm').reset();
+                    fetchDailySummary(); 
+                } else {
+                    customAlert(data.message || 'Failed to log food.');
+                }
+            } catch (err) {
+                customAlert('Network error during food logging.');
+                console.error("Food Log Error:", err);
+            }
+        }
+
+        async function logActivity(e) {
+            e.preventDefault();
+            const exercise = document.getElementById('exerciseDone').value;
+            const caloriesBurned = parseInt(document.getElementById('caloriesBurnedInput').value) || 0;
+            const sport = document.getElementById('sportsPlaying').value;
+            const runningSteps = parseInt(document.getElementById('runningSteps').value) || 0;
+
+            if (!exercise && !sport && !runningSteps && !caloriesBurned) {
+                customAlert('Please enter at least one activity metric to save.');
+                return;
+            }
+
+            try {
+                // Use currentUser.id OR ._id
+                const studentId = currentUser.id || currentUser._id;
+                const payload = {
+                    userId: studentId,
+                    exercise: exercise || 'No Log',
+                    caloriesBurned,
+                    sport: sport || 'None',
+                    runningSteps
+                };
+
+                const res = await fetch('/activity', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    customAlert('Daily activity log saved successfully.');
+                    fetchDailySummary(); 
+                } else {
+                    customAlert(data.message || 'Failed to log activity.');
+                }
+            } catch (err) {
+                customAlert('Network error during activity logging.');
+                console.error("Activity Log Error:", err);
+            }
+        }
+
+        async function fetchDailySummary() {
+            document.getElementById('logStatus').textContent = 'Loading today\'s log...';
+            document.getElementById('dailyLogView').innerHTML = ''; // Clear previous content
+
+            try {
+                // Use currentUser.id OR ._id
+                const studentId = currentUser.id || currentUser._id;
+                const res = await fetch(`/student/daily-summary?userId=${studentId}`);
+                if (!res.ok) throw new Error('Failed to fetch summary');
+                
+                const summary = await res.json();
+                
+                // 1. Update overall summary metrics
+                document.getElementById('caloriesConsumed').textContent = summary.totalCaloriesConsumed;
+                document.getElementById('caloriesBurned').textContent = summary.activity.caloriesBurned || 0;
+                
+                // 2. Render daily log view
+                let logHTML = '';
+                
+                // Activity Log Display
+                const activity = summary.activity;
+                logHTML += `
+                    <div class="card bg-slate-700/50 p-4">
+                        <h4 class="text-lg font-bold text-orange-400 mb-2">Today's Activity</h4>
+                        <ul class="text-sm space-y-1">
+                            <li><span class="font-semibold text-gray-300">Exercise:</span> ${activity.exercise || 'None'}</li>
+                            <li><span class="font-semibold text-gray-300">Calories Burned:</span> <span class="text-red-300">${activity.caloriesBurned || 0} kcal</span></li>
+                            <li><span class="font-semibold text-gray-300">Sport:</span> ${activity.sport || 'None'}</li>
+                            <li><span class="font-semibold text-gray-300">Steps:</span> ${activity.runningSteps || 0}</li>
+                        </ul>
+                    </div>
+                `;
+
+                // Meal Log Display
+                if (summary.meals.length > 0) {
+                    summary.meals.forEach(meal => {
+                        const totalCals = meal.foods.reduce((sum, food) => sum + food.calories, 0);
+                        logHTML += `
+                            <div class="card bg-slate-700/50 p-4">
+                                <h4 class="text-lg font-bold text-green-400">${meal.type} 
+                                    <span class="text-sm font-normal text-gray-400 ml-2">(${totalCals} kcal)</span>
+                                </h4>
+                                <ul class="list-disc list-inside text-sm mt-2 text-gray-300 space-y-1">
+                                    ${meal.foods.map(food => `<li>${food.food} (${food.calories} cal)</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    });
+                } else {
+                    logHTML += '<p class="text-gray-400 text-center p-4">No meals logged today yet. Get started!</p>';
+                }
+
+                document.getElementById('dailyLogView').innerHTML = logHTML;
+                document.getElementById('logStatus').style.display = 'none';
+
+            } catch (err) {
+                document.getElementById('logStatus').textContent = 'Error loading log data.';
+                console.error("Daily Summary Fetch Error:", err);
+            }
+        }
+    </script>
+</body>
+</html>

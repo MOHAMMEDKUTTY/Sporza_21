@@ -1,0 +1,170 @@
+/* src/components/Assignment.module.css */
+
+.assignmentCard {
+  background-color: #1E293B; /* Slate 800 */
+  border: 1px solid #334155; /* Slate 700 */
+  border-radius: 0.75rem; 
+  overflow: hidden; 
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out; 
+  margin-bottom: 1rem; 
+  color: #E2E8F0; 
+  width: 100%; 
+  box-sizing: border-box;
+}
+.assignmentCard:hover {
+   box-shadow: 0 0 10px rgba(96, 165, 250, 0.15);
+   border-color: #60a5fa; /* Blue 400 */
+}
+
+.assignmentCardHeader {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem;
+}
+
+.assignmentIconContainer {
+  background-color: #3b82f6; /* Blue 500 */
+  border-radius: 50%;
+  padding: 0.6rem;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.assignmentIcon {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: white;
+}
+
+.assignmentDetails {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.assignmentTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #bfdbfe; /* Blue 200 */
+  margin-bottom: 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.assignmentAuthor {
+  font-size: 0.8rem;
+  color: #94a3b8; /* Slate 400 */
+}
+
+.assignmentMeta {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.assignmentDate {
+   margin-right: 0.75rem;
+}
+
+.assignmentChevron {
+  width: 0.9rem;
+  height: 0.9rem;
+  transition: transform 0.3s ease-in-out;
+  color: #64748b; /* Slate 500 */
+}
+/* This class will be added dynamically */
+.assignmentChevron.expanded {
+  transform: rotate(180deg);
+}
+
+.assignmentCardBody {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+/* This class will be added dynamically */
+.assignmentCardBody.expanded {
+   max-height: 500px; /* Adjust as needed */
+}
+
+.assignmentBodyContent {
+   padding: 1rem 1.25rem;
+   padding-top: 0.75rem;
+   border-top: 1px solid #334155;
+   font-size: 0.9rem;
+   color: #cbd5e1;
+}
+
+.assignmentDueDate {
+   font-weight: 500;
+   color: #f87171; /* Red 400 */
+   margin-bottom: 0.75rem;
+   font-size: 0.85rem;
+}
+
+.assignmentDescription {
+   white-space: pre-wrap;
+   line-height: 1.6;
+   margin-bottom: 1rem;
+}
+
+/* --- Submission Form Styles --- */
+.submissionForm {
+   margin-top: 1rem;
+   padding-top: 1rem;
+   border-top: 1px dashed #475569;
+}
+
+.remarksLabel {
+   display: block;
+   font-size: 0.8rem;
+   font-weight: 500;
+   color: #94a3b8;
+   margin-bottom: 0.25rem;
+}
+
+.remarksTextarea {
+   width: 100%;
+   padding: 0.75rem;
+   border-radius: 0.5rem;
+   border: 1px solid #475569;
+   background-color: #0F172A;
+   color: #E2E8F0;
+   margin-top: 0.25rem;
+   margin-bottom: 0.75rem;
+   resize: vertical;
+   min-height: 60px;
+   font-size: 0.9rem;
+   line-height: 1.6;
+   box-sizing: border-box;
+}
+.remarksTextarea:focus {
+    outline: none;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
+}
+
+.submitButton {
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  background-color: #16a34a; /* Green 600 */
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  width: auto; 
+  display: inline-block;
+}
+.submitButton:hover {
+   background-color: #15803d; /* Green 700 */
+}

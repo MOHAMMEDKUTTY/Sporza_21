@@ -1,0 +1,25 @@
+/* src/index.css */
+
+/* --- Base & Body Styles --- */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Dark Theme */
+  background-color: #0F172A; /* Slate 900 */
+  color: #E2E8F0; /* Slate 200 */
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* All other styles (like .page-container, .btn, .assignment-card) 
+  have been moved to their respective .module.css files.
+*/

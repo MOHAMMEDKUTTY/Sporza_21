@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Trainer Dashboard â€“ Sporza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A; 
+            color: #E2E8F0;
+        }
+        .card {
+            background-color: #1E293B; 
+            border: 1px solid #334155;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .meal-item {
+            background-color: #334155;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .detail-section {
+            display: none;
+            overflow: hidden;
+            transition: all 0.4s ease-in-out;
+        }
+        .detail-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col sm:flex-row items-center justify-between mb-10 pb-4 border-b border-blue-400/30">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-400 mb-4 sm:mb-0">Sporza Trainer Dashboard</h1>
+            <div class="flex items-center gap-4">
+                <span id="trainerName" class="text-lg text-gray-400 font-medium hidden sm:block"></span>
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2.5 rounded-full transition duration-300 transform hover:scale-105 shadow-md shadow-red-900/50">Logout</button>
+            </div>
+        </header>
+
+        <main class="space-y-10">
+            <section class="card text-center p-8 bg-slate-800/50">
+                <h2 class="text-2xl font-bold text-blue-300 mb-4">Your Class Enrollment Code</h2>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <p id="classCode" class="text-6xl font-black tracking-widest text-teal-400 bg-slate-900 px-6 py-3 rounded-xl shadow-inner shadow-teal-500/20">Loading...</p>
+                    <button onclick="copyCode()" class="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg shadow-blue-900/50">Copy Code</button>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Share this code with your students to enroll.</p>
+            </section>
+
+            <section class="card">
+                <h2 class="text-2xl font-bold text-blue-300 mb-6">Enrolled Students Overview</h2>
+                <div id="studentsContainer" class="space-y-6">
+                    <p id="loadingMessage" class="text-gray-400 text-center text-lg">Loading student list and data...</p>
+                </div>
+            </section>
+            
+            <div class="mt-6 text-center">
+                 <a href="http://localhost:3000/post-assignment/" 
+                    class="bg-red-600 hover:bg-teal-700 text-white font-semibold px-8 py-3 rounded-full transition duration-300 transform hover:scale-105 shadow-lg shadow-teal-900/50"
+                    id="postAssignmentLink">
+                     Post New Assignment
+                 </a>
+             </div>
+             
+        </main>
+    </div>
+
+    <div id="customAlert" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 p-6 rounded-xl shadow-2xl max-w-sm w-full border border-teal-500/50">
+            <p id="alertMessage" class="text-lg text-white font-semibold mb-4 text-center">Alert Message</p>
+            <button onclick="document.getElementById('customAlert').classList.add('hidden')" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg transition duration-300">OK</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user || user.role !== 'trainer') {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // FIX: Dynamically set the post assignment link with the trainer's MongoDB ID
+            const postAssignmentLink = document.getElementById('postAssignmentLink');
+            if (postAssignmentLink && user.id) {
+                // Set the URL to http://localhost:3000/post-assignment/654c601234567890abcdef12
+                postAssignmentLink.href = `http://localhost:3000/post-assignment/${user.id}`;
+            }
+
+            document.getElementById('trainerName').textContent = `Welcome, ${user.name}`;
+            fetchClassCode(user.id);
+            fetchStudents(user.id);
+        });
+
+        function customAlert(message) {
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('customAlert').classList.remove('hidden');
+        }
+
+        async function fetchClassCode(trainerId) {
+            try {
+                // Assuming server is on port 5000, but using relative path if served by Express
+                const res = await fetch(`/trainer/class-code/${trainerId}`); 
+                const data = await res.json();
+                const classCodeElement = document.getElementById('classCode');
+                if (res.ok) {
+                    classCodeElement.textContent = data.classCode;
+                } else {
+                    classCodeElement.textContent = data.message || "Error";
+                    console.error("Failed to fetch class code:", data.message);
+                }
+            } catch (err) {
+                document.getElementById('classCode').textContent = "Network Error";
+                console.error("Network error fetching class code:", err);
+            }
+        }
+        
+        async function fetchStudents(trainerId) {
+            const container = document.getElementById('studentsContainer');
+            const loadingMessage = document.getElementById('loadingMessage');
+            try {
+                const res = await fetch(`/trainer/students/${trainerId}`);
+                const students = await res.json();
+                loadingMessage.style.display = 'none';
+
+                if (students.length === 0) {
+                    container.innerHTML = "<p class='text-gray-400 text-center text-lg p-4'>No students found. Share your class code to enroll them!</p>";
+                    return;
+                }
+
+                // Use Promise.all to fetch meals and activity concurrently for all students
+                const studentPromises = students.map(student => renderStudentCard(student, container));
+                await Promise.all(studentPromises);
+
+            } catch (err) {
+                loadingMessage.textContent = "Error loading students.";
+                console.error("Network error fetching students:", err);
+            }
+        }
+        
+        async function renderStudentCard(student, container) {
+            const card = document.createElement('div');
+            card.id = `student-${student._id}`;
+            card.className = "card p-6 bg-slate-800 border-l-4 border-blue-500";
+
+            let mealsData, activityData;
+
+            try {
+                // Fetch Meals
+                const mealsRes = await fetch(`/trainer/student-meals/${student._id}`);
+                mealsData = await mealsRes.json();
+                
+                // Fetch Activity
+                const activityRes = await fetch(`/trainer/student-activity/${student._id}`);
+                activityData = await activityRes.json();
+                
+            } catch (err) {
+                console.error(`Error loading data for ${student.name}:`, err);
+                mealsData = [];
+                activityData = [];
+            }
+
+            // --- Meal HTML Generation ---
+            let mealsHTML = mealsData.length > 0 ? '' : `<p class="text-gray-500 italic text-sm">No meals logged yet.</p>`;
+            if (mealsData.length > 0) {
+                mealsData.slice(0, 5).forEach(meal => { 
+                    const totalCals = meal.foods.reduce((sum, food) => sum + food.calories, 0);
+                    mealsHTML += `
+                        <div class="meal-item">
+                            <h4 class="text-teal-300 font-semibold text-base">${meal.type} on ${new Date(meal.date).toLocaleDateString()}</h4>
+                            <p class="text-sm text-gray-400 mb-2">Total Calories: <span class="font-bold text-lg">${totalCals}</span></p>
+                            <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                                ${meal.foods.map(food => `<li class="ml-2">${food.food} (${food.calories} cal)</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                });
+            }
+
+            // --- Activity HTML Generation (showing the latest entry) ---
+            const latestActivity = activityData[0];
+            let activityHTML = '<p class="text-gray-500 italic text-sm">No activity logged recently.</p>';
+
+            if (latestActivity) {
+                activityHTML = `
+                    <p class="text-base text-gray-300">
+                        <span class="font-semibold text-teal-400">Date:</span> ${new Date(latestActivity.date).toLocaleDateString()}
+                    </p>
+                    <p class="text-base text-gray-300">
+                        <span class="font-semibold text-teal-400">Activity:</span> ${latestActivity.exercise}
+                    </p>
+                    <p class="text-base text-gray-300">
+                        <span class="font-semibold text-teal-400">Calories Burned:</span> ${latestActivity.caloriesBurned} cal
+                    </p>
+                    <p class="text-base text-gray-300">
+                        <span class="font-semibold text-teal-400">Sport Played:</span> ${latestActivity.sport}
+                    </p>
+                    <p class="text-base text-gray-300">
+                        <span class="font-semibold text-teal-400">Running Steps:</span> ${latestActivity.runningSteps} steps
+                    </p>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 cursor-pointer" onclick="toggleDetails('${student._id}')">
+                    <div class="flex-grow">
+                        <h3 class="text-2xl font-bold text-blue-300 mb-1">${student.name} <span class="text-sm text-gray-500 font-normal ml-2">(${student.role})</span></h3>
+                        <p class="text-sm text-gray-400">Email: ${student.email} | Age: ${student.age} | Weight: <span class="text-teal-400 font-bold">${student.weight} kg</span></p>
+                    </div>
+                    <button class="mt-3 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition duration-300 flex items-center" id="toggleBtn-${student._id}">
+                        View Details <span>&darr;</span>
+                    </button>
+                </div>
+
+                <div id="details-${student._id}" class="detail-section mt-4 border-t border-gray-600 pt-4">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-xl font-bold text-teal-300 mb-3 border-b border-gray-700 pb-1">Recent Meal Log (Last 5)</h4>
+                            <div class="space-y-3">
+                                ${mealsHTML}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-xl font-bold text-teal-300 mb-3 border-b border-gray-700 pb-1">Latest Activity Log</h4>
+                            <div class="bg-gray-700 p-4 rounded-lg shadow-inner">
+                                ${activityHTML}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        function toggleDetails(studentId) {
+            const detailsDiv = document.getElementById(`details-${studentId}`);
+            const toggleBtn = document.getElementById(`toggleBtn-${studentId}`);
+
+            if (detailsDiv.classList.contains('active')) {
+                detailsDiv.classList.remove('active');
+                detailsDiv.style.maxHeight = '0';
+                toggleBtn.innerHTML = 'View Details <span>&darr;</span>';
+            } else {
+                detailsDiv.classList.add('active');
+                // Calculate height dynamically
+                detailsDiv.style.maxHeight = detailsDiv.scrollHeight + 'px';
+                toggleBtn.innerHTML = 'Hide Details <span>&uarr;</span>';
+            }
+        }
+
+        function copyCode() {
+            const code = document.getElementById('classCode').textContent;
+            if (code && code !== 'Loading...' && code !== 'Error' && code !== 'Network Error') {
+                navigator.clipboard.writeText(code).then(() => {
+                    customAlert('Class code copied to clipboard: ' + code);
+                }).catch(err => {
+                    console.error('Failed to copy text:', err);
+                });
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = '/login.html'; 
+        }
+    </script>
+</body>
+</html>

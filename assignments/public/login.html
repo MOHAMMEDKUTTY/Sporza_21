@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sporza | Login & Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #E2E8F0;
+            
+            background: linear-gradient(135deg, #1a202c, #2c5282, #2d3748, #4c51bf);
+            background-size: 400% 400%;
+            animation: gradientMove 12s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        
+        .auth-card {
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            background-color: rgba(31, 41, 55, 0.7); 
+            border-radius: 1.5rem; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+            width: 100%;
+            max-width: 440px;
+            min-height: 500px; 
+            padding: 2rem;
+        }
+
+        
+        .gradient-text {
+            background-image: linear-gradient(to right, #38bdf8, #10b981); 
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        
+        .register-active {
+            max-width: 500px !important;
+        }
+
+        .form-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        
+        .form-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .form-container::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.5); 
+            border-radius: 4px;
+        }
+
+        .auth-input {
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #E2E8F0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .auth-input:focus {
+            border-color: #38bdf8; 
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            outline: none;
+        }
+
+        
+        .btn-primary {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .btn-blue {
+            background-color: #38bdf8; 
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+        }
+        .btn-blue:hover {
+            background-color: #0ea5e9; 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.6);
+        }
+        .btn-teal {
+            background-color: #10b981; 
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        .btn-teal:hover {
+            background-color: #059669; 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.6);
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="authCard" class="auth-card text-white">
+        <h1 class="text-5xl font-extrabold text-center mb-6 tracking-tighter gradient-text">
+            SPORZA
+        </h1>
+
+        <div class="flex border-b border-gray-700 mb-6">
+            <button id="loginTab" class="flex-1 py-3 focus:outline-none font-extrabold text-blue-400 border-b-4 border-blue-400 transition duration-300 hover:text-white" onclick="showForm('login')">LOGIN</button>
+            <button id="registerTab" class="flex-1 py-3 focus:outline-none font-extrabold text-gray-500 transition duration-300 hover:text-white" onclick="showForm('register')">REGISTER</button>
+        </div>
+
+        <p id="message" class="text-sm text-center mb-3 font-medium text-red-400"></p>
+
+        <div class="form-container">
+            <form id="loginForm" class="space-y-4">
+                <h2 class="text-3xl font-bold gradient-text mb-4">Welcome Back</h2>
+                <div>
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Email</label>
+                    <input type="email" id="loginEmail" class="auth-input w-full rounded-xl p-3" required>
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Password</label>
+                    <input type="password" id="loginPassword" class="auth-input w-full rounded-xl p-3" required>
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Role</label>
+                    <select id="loginRole" class="auth-input w-full rounded-xl p-3 appearance-none">
+                        <option value="student" color="black">Student</option>
+                        <option value="trainer" color="black">Trainer</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary btn-blue w-full text-white py-3 rounded-xl font-extrabold">LOG IN</button>
+            </form>
+
+            <form id="registerForm" class="hidden space-y-4">
+                <h2 class="text-3xl font-bold gradient-text mb-4">Create Account</h2>
+                <div>
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Role</label>
+                    <select id="registerRole" class="auth-input w-full rounded-xl p-3 appearance-none" onchange="toggleTrainerCode()">
+                        <option value="student">Student</option>
+                        <option value="trainer">Trainer</option>
+                    </select>
+                </div>
+                <div id="trainerCodeContainer">
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Trainer Code</label>
+                    <input type="text" id="trainerCode" placeholder="Enter your trainer's code" class="auth-input w-full rounded-xl p-3" required>
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Name</label>
+                    <input type="text" id="name" class="auth-input w-full rounded-xl p-3" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block mb-1 text-sm font-semibold text-gray-300">Age</label>
+                        <input type="number" id="age" class="auth-input w-full rounded-xl p-3" required min="5" max="120">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-semibold text-gray-300">Weight (kg)</label>
+                        <input type="number" id="weight" class="auth-input w-full rounded-xl p-3" required min="1" max="500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Email</label>
+                    <input type="email" id="email" class="auth-input w-full rounded-xl p-3" required>
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Phone (Optional)</label>
+                    <input type="tel" id="phone" class="auth-input w-full rounded-xl p-3">
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-semibold text-gray-300">Password</label>
+                    <input type="password" id="password" class="auth-input w-full rounded-xl p-3" required>
+                </div>
+                <button type="submit" class="btn-primary btn-teal w-full text-white py-3 rounded-xl font-extrabold">REGISTER</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+        const message = document.getElementById("message");
+        const trainerCodeContainer = document.getElementById('trainerCodeContainer');
+        const trainerCodeInput = document.getElementById('trainerCode');
+        const authCard = document.getElementById("authCard");
+        const loginTab = document.getElementById("loginTab");
+        const registerTab = document.getElementById("registerTab");
+        const registerRoleSelect = document.getElementById('registerRole');
+
+        if (localStorage.getItem('currentUser')) {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            window.location.href = user.role === 'trainer' ? 'trainer.html' : 'site.html';
+        }
+
+        function setMessage(text, isError = true) {
+            message.textContent = text;
+            message.classList.remove('hidden');
+            message.className = 'text-sm text-center mb-3 font-medium ' + (isError ? 'text-red-400' : 'text-green-400');
+        }
+
+        function clearMessage() {
+            message.textContent = "";
+            message.classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleTrainerCode();
+            loginForm.addEventListener('submit', handleLogin);
+            registerForm.addEventListener('submit', handleRegister);
+        });
+        
+        function showForm(type) {
+            clearMessage();
+            
+            const activeClasses = ["text-blue-400", "border-b-4", "border-blue-400"];
+            const inactiveClasses = ["text-gray-500", "border-b-0", "border-transparent"];
+
+            loginTab.classList.remove(...activeClasses, ...inactiveClasses);
+            registerTab.classList.remove(...activeClasses, ...inactiveClasses);
+
+            if (type === "login") {
+                loginForm.classList.remove("hidden");
+                registerForm.classList.add("hidden");
+                
+                loginTab.classList.add(...activeClasses, "font-extrabold");
+                registerTab.classList.add(...inactiveClasses, "font-extrabold");
+
+                authCard.classList.remove("register-active");
+            } else {
+                loginForm.classList.add("hidden");
+                registerForm.classList.remove("hidden");
+                
+                registerTab.classList.add(...activeClasses, "font-extrabold");
+                loginTab.classList.add(...inactiveClasses, "font-extrabold");
+
+                authCard.classList.add("register-active");
+            }
+        }
+
+        function toggleTrainerCode() {
+            const role = registerRoleSelect.value;
+            if (role === 'trainer') {
+                trainerCodeContainer.classList.add('hidden');
+                trainerCodeInput.removeAttribute('required');
+                trainerCodeInput.value = '';
+            } else {
+                trainerCodeContainer.classList.remove('hidden');
+                trainerCodeInput.setAttribute('required', 'required');
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            clearMessage();
+
+            const role = registerRoleSelect.value;
+            const payload = {
+                role,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                age: parseInt(document.getElementById('age').value),
+                weight: parseFloat(document.getElementById('weight').value),
+                phone: document.getElementById('phone').value,
+                trainerCode: role === 'student' ? document.getElementById('trainerCode').value : undefined
+            };
+
+            try {
+                const res = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    setMessage("âœ… Registration successful! Please log in.", false);
+                    showForm('login');
+                } else {
+                    setMessage(data.message || "âŒ Registration failed. Server responded with an error.", true);
+                }
+            } catch (error) {
+                setMessage("âŒ Network error. Could not connect to the server.", true);
+                console.error('Registration Error:', error);
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearMessage();
+
+            const payload = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value,
+                role: document.getElementById('loginRole').value
+            };
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    const redirectPage = data.user.role === 'trainer' ? 'trainer.html' : 'site.html';
+                    window.location.href = redirectPage;
+                } else {
+                    setMessage(data.message || "âŒ Login failed. Check your email, password, and role.", true);
+                }
+            } catch (error) {
+                setMessage("âŒ Network error. Could not connect to the server.", true);
+                console.error('Login Error:', error);
+            }
+        }
+
+        showForm('login');
+    </script>
+</body>
+</html>

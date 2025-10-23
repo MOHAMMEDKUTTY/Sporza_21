@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - FitTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-tr from-blue-100 to-white min-h-screen font-sans">
+  <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-blue-600">👨‍💼 Admin Panel - Remove Accounts</h1>
+      <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Logout</button>
+    </div>
+
+    <table class="w-full table-auto border-collapse">
+      <thead>
+        <tr class="bg-blue-200 text-blue-800">
+          <th class="px-4 py-2 border">Name</th>
+          <th class="px-4 py-2 border">Email</th>
+          <th class="px-4 py-2 border">Action</th>
+        </tr>
+      </thead>
+      <tbody id="userList" class="text-center text-sm">
+        <!-- Populated by JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+    const userList = document.getElementById("userList");
+
+    function renderUsers() {
+      userList.innerHTML = "";
+      const emails = Object.keys(users);
+      if (emails.length === 0) {
+        userList.innerHTML = '<tr><td colspan="3" class="py-4 text-gray-500">No users found.</td></tr>';
+        return;
+      }
+
+      emails.forEach(email => {
+        const user = users[email];
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="border px-4 py-2">${user.name}</td>
+          <td class="border px-4 py-2">${email}</td>
+          <td class="border px-4 py-2">
+            <button onclick="removeUser('${email}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Remove</button>
+          </td>
+        `;
+        userList.appendChild(row);
+      });
+    }
+
+    function removeUser(email) {
+      if (confirm(`Are you sure you want to remove ${email}?`)) {
+        delete users[email];
+        localStorage.setItem("users", JSON.stringify(users));
+        renderUsers();
+      }
+    }
+    function logout() {
+      window.location.href = "login.html";
+    }
+    renderUsers();
+  </script>
+</body>
+</html>

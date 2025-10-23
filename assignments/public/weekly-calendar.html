@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Calendar - Sporza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .card {
+            background-color: #1E293B; 
+            border: 1px solid #334155; 
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 min-h-screen p-4 sm:p-8 font-sans">
+    <div class="max-w-7xl mx-auto">
+
+        <header class="flex items-center justify-between mb-8 pb-4 border-b-2 border-blue-400/30">
+            <h1 class="text-4xl font-extrabold text-blue-400 tracking-tight">Sporza Weekly Log</h1>
+            <div class="flex items-center gap-4">
+                <a href="site.html" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-full transition duration-300 transform hover:scale-105 shadow-md shadow-blue-900/50">Back to Dashboard</a>
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2.5 rounded-full transition duration-300 transform hover:scale-105 shadow-md shadow-red-900/50">Logout</button>
+            </div>
+        </header>
+
+        <section class="card">
+            <h2 class="text-2xl font-bold text-teal-300 mb-4 flex items-center gap-2">
+                <span class="text-blue-400"></span> Calorie Summary 
+            </h2>
+            <div id="calendar" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-4">
+                <p class="text-gray-400 col-span-full text-center" id="calendarStatus">Loading weekly data...</p>
+            </div>
+            <p class="mt-6 text-sm text-gray-500 text-center">Data represents calories consumed for the current 7-day period.</p>
+        </section>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        const calendarStatus = document.getElementById('calendarStatus');
+
+        if (!user || user.role !== 'student') {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Helper function to format date as YYYY-MM-DD
+        function toISODateString(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        // Calculates a fixed 7-day window (e.g., today +/- 3 days)
+        function calculateDateRange() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Get the start of the 7-day window (4 days ago, including today)
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() - 3);
+
+            // Get the end of the 7-day window (3 days from now, including today)
+            const endDate = new Date(today);
+            endDate.setDate(today.getDate() + 3);
+
+            return {
+                startDate: toISODateString(startDate),
+                endDate: toISODateString(endDate)
+            };
+        }
+
+        async function fetchWeeklyData() {
+            const { startDate, endDate } = calculateDateRange();
+            
+            try {
+                const res = await fetch(`/food-log/weekly?userId=${user.id}&startDate=${startDate}&endDate=${endDate}`);
+                
+                if (res.ok) {
+                    const weeklyData = await res.json();
+                    renderCalendar(weeklyData, startDate, endDate);
+                } else {
+                    calendarStatus.textContent = "Failed to load weekly data.";
+                    console.error("Failed to fetch weekly data.");
+                }
+            } catch (err) {
+                calendarStatus.textContent = "Network error loading weekly data.";
+                console.error("Network error:", err);
+            }
+        }
+
+        function renderCalendar(data, startIso, endIso) {
+            const calDiv = document.getElementById('calendar');
+            calDiv.innerHTML = ""; // Clear the loading message
+
+            // Convert ISO strings back to Date objects
+            let currentDay = new Date(startIso);
+            const endDate = new Date(endIso);
+            
+            const todayIso = toISODateString(new Date());
+
+            // Loop through the 7 days
+            while (currentDay <= endDate) {
+                const isoDate = toISODateString(currentDay);
+                const dayData = data[isoDate] || { totalCalories: 0 };
+                
+                const isToday = isoDate === todayIso;
+
+                const dayDiv = document.createElement("div");
+                dayDiv.className = `border border-gray-700 rounded-lg p-4 text-center text-sm bg-gray-800 shadow-xl transition hover:bg-gray-700 cursor-pointer ${isToday ? 'border-4 border-teal-500 transform scale-105 shadow-teal-700/50' : ''}`;
+                
+                // Get day name for better UX
+                const dayName = isToday ? 'TODAY' : currentDay.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+                
+                dayDiv.innerHTML = `
+                    <strong class="block text-gray-300 text-sm font-bold">${dayName}</strong>
+                    <span class="block text-gray-500 text-xs mb-2">${isoDate}</span>
+                    <p class="mt-2 text-3xl font-black text-blue-400">${dayData.totalCalories}</p>
+                    <p class="text-xs text-gray-400 font-semibold">CALORIES</p>
+                `;
+                calDiv.appendChild(dayDiv);
+
+                // Move to the next day
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+        }
+
+        fetchWeeklyData();
+    </script>
+</body>
+</html>
+
